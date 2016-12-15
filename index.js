@@ -12,7 +12,7 @@ var handlers = [];
  * @param {Event} event
  */
 function onMessage(event) {
-  var i, len, handler, options, targetOrigin;
+  var i, len, handler, options, targetOrigin, data;
 
   for (i = 0, len = handlers.length; i < len; ++i) {
     handler = handlers[i].handler;
@@ -21,9 +21,17 @@ function onMessage(event) {
     targetOrigin = options.origin || origin;
 
     if (event.origin === targetOrigin) {
-      handler(
-        (options.json) ? JSON.parse(event.data) : event.data
-      );
+      if (options.json) {
+        try {
+          data = JSON.parse(event.data);
+        } catch(e) {
+          console.error(e);
+        }
+      } else {
+        data = event.data;
+      }
+
+      handler(data);
     }
   }
 }
