@@ -15,5 +15,8 @@
     "compile": "npm run webpack -- --output-file ${npm_package_name}.js",
     "minify": "npm run webpack -- --optimize-minimize --output-file ${npm_package_name}.min.js",
     "webpack": "webpack --colors --display-error-details --progress"
+  },
+  "devDependencies": {
+    "webpack": "^1.14.0"
   }
 }
