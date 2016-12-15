@@ -18,5 +18,9 @@
   },
   "devDependencies": {
     "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "event-listener": "github:sasaplus1-prototype/event-listener.js",
+    "location-origin": "github:sasaplus1-prototype/location-origin.js"
   }
 }
