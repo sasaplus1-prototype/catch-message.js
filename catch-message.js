@@ -1,5 +1,5 @@
 /*!
- * @license catch-message.js ver.0.0.0 Copyright(c) 2016 sasa+1
+ * @license catch-message.js ver.1.0.0 Copyright(c) 2016 sasa+1
  * https://github.com/sasaplus1-prototype/catch-message.js
  * Released under the MIT license.
  */
@@ -61,30 +61,48 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var isFunction = __webpack_require__(3);
+
 	var eventListener = __webpack_require__(1);
 
 	var origin = __webpack_require__(2).get();
 
-	var handlers = [];
+	var settings = [];
 
 	/**
-	 * event handler for onMessage
+	 * event handler for onmessage
 	 *
 	 * @param {Event} event
 	 */
 	function onMessage(event) {
-	  var i, len, handler, options, targetOrigin;
+	  var i, len, setting, handler, options, targetOrigin, err, data;
 
-	  for (i = 0, len = handlers.length; i < len; ++i) {
-	    handler = handlers[i].handler;
-	    options = handlers[i].options;
+	  for (i = 0, len = settings.length; i < len; ++i) {
+	    setting = settings[i];
+
+	    if (!setting) {
+	      continue;
+	    }
+
+	    handler = setting.handler;
+	    options = setting.options || {};
 
 	    targetOrigin = options.origin || origin;
 
 	    if (event.origin === targetOrigin) {
-	      handler(
-	        (options.json) ? JSON.parse(event.data) : event.data
-	      );
+	      err = null;
+
+	      if (options.json) {
+	        try {
+	          data = JSON.parse(event.data);
+	        } catch(e) {
+	          err = e;
+	        }
+	      } else {
+	        data = event.data;
+	      }
+
+	      handler(err, data);
 	    }
 	  }
 	}
@@ -93,12 +111,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * add event handler for onMessage
 	 *
 	 * @param {Function} handler
-	 * @param {Object} options
-	 * @param {Boolean} options.json
-	 * @param {String} options.origin
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.json]
+	 * @param {String} [options.origin]
+	 * @throws {TypeError}
 	 */
 	function catchMessage(handler, options) {
-	  handlers.push({
+	  if (!isFunction(handler)) {
+	    throw new TypeError('handler must be a Function');
+	  }
+
+	  settings.push({
 	    handler: handler,
 	    options: options
 	  });
@@ -180,6 +203,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = {
 	  get: get
+	};
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var toString = Object.prototype.toString;
+
+	module.exports = function isFunction(value) {
+	  return (
+	    typeof value === 'function' || toString.call(value) === '[object Function]'
+	  );
 	};
 
 
