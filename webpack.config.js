@@ -6,6 +6,7 @@ const webpack = require('webpack');
 
 const {
   name,
+  repository,
   version,
 } = require('./package');
 
@@ -28,6 +29,15 @@ module.exports = {
     libraryTarget: 'umd',
   },
 
+  resolveLoader: {
+    root: path.join(__dirname, 'node_modules'),
+  },
+
+  node: {
+    Buffer: false,
+    process: false,
+  },
+
   resolve: {
     extensions: [
       '',
@@ -46,7 +56,7 @@ module.exports = {
     new webpack.optimize.AggressiveMergingPlugin,
     new webpack.BannerPlugin([
       `@license ${name}.js ver.${version} Copyright(c) 2016 sasa+1`,
-      `https://github.com/sasaplus1-prototype/${name}.js`,
+      repository.url.replace(/\.git$/i, ''),
       'Released under the MIT license.',
     ].join('\n'), {
       options: {
