@@ -5,7 +5,8 @@
   "author": "sasa+1 <sasaplus1@gmail.com>",
   "dependencies": {
     "event-listener": "github:sasaplus1-prototype/event-listener.js",
-    "location-origin": "github:sasaplus1-prototype/location-origin.js"
+    "location-origin": "github:sasaplus1-prototype/location-origin.js",
+    "type-check": "github:sasaplus1-prototype/type-check.js"
   },
   "devDependencies": {
     "eslint": "^3.12.2",

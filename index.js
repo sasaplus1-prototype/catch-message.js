@@ -1,37 +1,47 @@
 'use strict';
 
+var isFunction = require('type-check/is-function');
+
 var eventListener = require('event-listener');
 
 var origin = require('location-origin').get();
 
-var handlers = [];
+var settings = [];
 
 /**
- * event handler for onMessage
+ * event handler for onmessage
  *
  * @param {Event} event
  */
 function onMessage(event) {
-  var i, len, handler, options, targetOrigin, data;
+  var i, len, setting, handler, options, targetOrigin, err, data;
 
-  for (i = 0, len = handlers.length; i < len; ++i) {
-    handler = handlers[i].handler;
-    options = handlers[i].options;
+  for (i = 0, len = settings.length; i < len; ++i) {
+    setting = settings[i];
+
+    if (!setting) {
+      continue;
+    }
+
+    handler = setting.handler;
+    options = setting.options || {};
 
     targetOrigin = options.origin || origin;
 
     if (event.origin === targetOrigin) {
+      err = null;
+
       if (options.json) {
         try {
           data = JSON.parse(event.data);
         } catch(e) {
-          console.error(e);
+          err = e;
         }
       } else {
         data = event.data;
       }
 
-      handler(data);
+      handler(err, data);
     }
   }
 }
@@ -40,12 +50,17 @@ function onMessage(event) {
  * add event handler for onMessage
  *
  * @param {Function} handler
- * @param {Object} options
- * @param {Boolean} options.json
- * @param {String} options.origin
+ * @param {Object} [options]
+ * @param {Boolean} [options.json]
+ * @param {String} [options.origin]
+ * @throws {TypeError}
  */
 function catchMessage(handler, options) {
-  handlers.push({
+  if (!isFunction(handler)) {
+    throw new TypeError('handler must be a Function');
+  }
+
+  settings.push({
     handler: handler,
     options: options
   });
