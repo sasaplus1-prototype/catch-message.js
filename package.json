@@ -1,7 +1,7 @@
 {
   "name": "catch-message",
   "description": "sweet onmessage",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "sasa+1 <sasaplus1@gmail.com>",
   "dependencies": {
     "event-listener": "github:sasaplus1-prototype/event-listener.js",
